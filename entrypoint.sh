@@ -30,4 +30,4 @@ echo "DB is reachable. Running migrations..."
 flask db upgrade || alembic upgrade head || true
 
 echo "Starting Gunicorn..."
-exec gunicorn --bind 0.0.0.0:5055 estatecore_backend.wsgi:app
+exec gunicorn --bind 0.0.0.0:5000 wsgi:app
