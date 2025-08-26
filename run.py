@@ -1,5 +1,9 @@
-from estatecore_backend import create_app
-app = create_app()
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5050)
+    port = int(os.getenv("PORT", 5000))  # Default to 5000 if not in .env
+    app.run(host="0.0.0.0", port=port)

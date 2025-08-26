@@ -1,8 +1,14 @@
-# WSGI entrypoint
-from . import create_app
+#!/usr/bin/env python3
+import os
+import sys
+
+# Add the current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from estatecore_backend import create_app
 
 app = create_app()
 
-# Optional: gunicorn looks for 'app' by default.
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)

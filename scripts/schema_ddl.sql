@@ -1,0 +1,93 @@
+-- EstateCore schema (Postgres)
+CREATE TABLE IF NOT EXISTS "user" (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL DEFAULT 'end_user',
+  client_id INTEGER NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS tenant (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255),
+  client_id INTEGER NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS lease (
+  id SERIAL PRIMARY KEY,
+  tenant_id INTEGER NOT NULL,
+  contract_rent DOUBLE PRECISION NOT NULL,
+  start_date DATE,
+  end_date DATE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS payment (
+  id SERIAL PRIMARY KEY,
+  tenant_id INTEGER NOT NULL,
+  month VARCHAR(7) NOT NULL,
+  amount_due DOUBLE PRECISION NOT NULL DEFAULT 0,
+  amount_paid DOUBLE PRECISION NOT NULL DEFAULT 0,
+  days_late INTEGER NOT NULL DEFAULT 0,
+  paid BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS expense (
+  id SERIAL PRIMARY KEY,
+  client_id INTEGER NOT NULL DEFAULT 1,
+  category VARCHAR(100) NOT NULL,
+  amount DOUBLE PRECISION NOT NULL,
+  date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS utility_bill (
+  id SERIAL PRIMARY KEY,
+  client_id INTEGER NOT NULL DEFAULT 1,
+  month VARCHAR(7) NOT NULL,
+  amount DOUBLE PRECISION NOT NULL,
+  heating_type VARCHAR(20),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS message (
+  id SERIAL PRIMARY KEY,
+  client_id INTEGER NOT NULL DEFAULT 1,
+  tenant_id INTEGER,
+  text TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS application (
+  id SERIAL PRIMARY KEY,
+  tenant_name VARCHAR(255) NOT NULL,
+  income DOUBLE PRECISION NOT NULL,
+  proposed_rent DOUBLE PRECISION NOT NULL,
+  credit_score INTEGER,
+  late_payments INTEGER NOT NULL DEFAULT 0,
+  client_id INTEGER NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS maintenance (
+  id SERIAL PRIMARY KEY,
+  tenant_id INTEGER,
+  description TEXT NOT NULL,
+  status VARCHAR(20) DEFAULT 'open',
+  priority VARCHAR(20) DEFAULT 'normal',
+  client_id INTEGER NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS feature_toggle (
+  id SERIAL PRIMARY KEY,
+  client_id INTEGER NOT NULL,
+  feature VARCHAR(100) NOT NULL,
+  enabled BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT NOW(),
+  CONSTRAINT uq_client_feature UNIQUE (client_id, feature)
+);

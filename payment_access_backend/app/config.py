@@ -12,7 +12,7 @@ import os
 class Config:
     # Use an environment variable if set, otherwise default to a local SQLite DB.
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "SQLALCHEMY_DATABASE_URI", "postgresql://postgres:password@127.0.0.1:5433/estatecore_devpayment_access.db"
+        "SQLALCHEMY_DATABASE_URI", "postgresql://postgres:password@127.0.0.1:5432/estatecore_devpayment_access.db"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
