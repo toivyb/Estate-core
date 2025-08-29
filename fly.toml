@@ -1,34 +1,34 @@
-app = "estatecore-backend-floral-hill-9253"
+# fly.toml file for estatecore-backend
+app = "estatecore-backend"
+primary_region = "ewr"
 
 [build]
-
-[deploy]
-  release_command = "flask --app estatecore_backend.wsgi db upgrade"
+  dockerfile = "Dockerfile"
 
 [env]
   PORT = "8080"
+  PYTHONUNBUFFERED = "true"
   FLASK_ENV = "production"
+  # Flask will auto-detect your create_app() factory
+  FLASK_APP = "estatecore_backend:create_app"
+
+# Run DB migrations automatically before deploy
+release_command = "flask --app estatecore_backend:create_app db upgrade"
 
 [[services]]
   internal_port = 8080
-  protocol = "tcp"
+  processes = ["app"]
 
   [[services.ports]]
     port = 80
+    handlers = ["http"]
+
   [[services.ports]]
     port = 443
+    handlers = ["tls", "http"]
 
-  [[services.http_checks]]
-    interval = "10s"
-    grace_period = "30s"
-    method = "GET"
-    path = "/healthz"
-    protocol = "http"
+  [[services.tcp_checks]]
+    interval = "15s"
     timeout = "2s"
-
-[http_service]
-  internal_port = 5000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-  min_machines_running = 1
+    grace_period = "1m"
+    restart_limit = 0
