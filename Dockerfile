@@ -2,23 +2,17 @@
 
 WORKDIR /app
 
-# System deps for psycopg2
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libpq-dev curl ca-certificates && \
+# Install system packages
+RUN apt-get update && apt-get install -y \
+    build-essential gcc libpq-dev curl && \
     rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt ./
-# Ensure psycopg2 (or psycopg2-binary) is in requirements.txt
+# Copy and install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy app
 COPY . .
 
-# Set environment variables
-ENV FLASK_APP=wsgi.py
-ENV PYTHONPATH=/app
-
-# Make entrypoint executable
-RUN chmod +x /app/entrypoint.sh
-
-EXPOSE 5000
-CMD ["./entrypoint.sh"]
+ENV PORT=8080
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "estatecore_backend:create_app()"]
