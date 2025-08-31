@@ -3,7 +3,9 @@ app = "estatecore-backend"
 primary_region = "ewr"
 
 [build]
-  dockerfile = "Dockerfile"
+  builder = "paketobuildpacks/builder-jammy-base"
+  buildpacks = ["gcr.io/paketo-buildpacks/python"]
+
 
 [env]
   PORT = "8080"
