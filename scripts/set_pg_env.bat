@@ -1,0 +1,5 @@
+set PGHOST=localhost
+set PGPORT=5432
+set PGUSER=postgres
+set PGPASSWORD=YOUR_POSTGRES_PASSWORD
+set PGDATABASE=postgres

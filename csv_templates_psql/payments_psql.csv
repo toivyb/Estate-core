@@ -1,0 +1,5 @@
+id,tenant_id,month,amount_due,amount_paid,days_late,paid,created_at
+,1,2025-07,2000,2000,0,TRUE,
+,1,2025-08,2000,1500,6,FALSE,
+,2,2025-07,1800,1800,2,TRUE,
+,2,2025-08,1800,0,10,FALSE,

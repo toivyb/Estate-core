@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: estatecore-backend
+    env: python
+    region: oregon
+    plan: free
+    rootDir: estatecore_backend
+    buildCommand: "cd estatecore_backend && pip install -r requirements.txt"
+    startCommand: "gunicorn wsgi:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.9.18"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: estatecore-db
+          property: connectionString
+      - key: ALLOWED_ORIGINS
+        value: "https://your-frontend-domain.onrender.com"
+
+  - type: pserv
+    name: estatecore-db
+    env: postgresql
+    region: oregon
+    plan: free
+    databaseName: estatecore
+    databaseUser: estatecore
