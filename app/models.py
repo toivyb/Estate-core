@@ -28,6 +28,19 @@ class PropertyManager(db.Model):
 
 class Tenant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
-    unit = db.Column(db.String(50))
+    name = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255))
+    phone = db.Column(db.String(50))
+    address = db.Column(db.String(500))
+    emergency_contact_name = db.Column(db.String(255))
+    emergency_contact_phone = db.Column(db.String(50))
+    emergency_contact_address = db.Column(db.String(500))
+    
+    # Lease Agreement Information
+    lease_start_date = db.Column(db.Date, nullable=False)
+    lease_end_date = db.Column(db.Date, nullable=False)
+    lease_amount = db.Column(db.Numeric(10, 2), nullable=False)
+    security_deposit = db.Column(db.Numeric(10, 2), nullable=False)
+    lease_document_path = db.Column(db.String(500))
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

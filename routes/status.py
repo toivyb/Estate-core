@@ -27,6 +27,57 @@ def _feature_enabled(name: str, client_id: int = 1):
     row = FeatureToggle.query.filter_by(client_id=client_id, feature=name).first()
     return bool(row.enabled) if row else True  # default-on
 
+@status_bp.get("/risk-summary")
+def risk_summary():
+    maintenance_count = _count(Maintenance)
+    overdue_payments = db.session.query(Payment).filter(Payment.status == 'overdue').count()
+    high_risk_tenants = 0  # Placeholder - could be calculated based on late payments
+    
+    total_alerts = maintenance_count + overdue_payments + high_risk_tenants
+    
+    return jsonify({
+        "alerts": total_alerts,
+        "breakdown": {
+            "maintenance_issues": maintenance_count,
+            "overdue_payments": overdue_payments,
+            "high_risk_tenants": high_risk_tenants
+        }
+    })
+
+@status_bp.get("/maintenance/hotspots/<int:property_id>")
+def maintenance_hotspots(property_id):
+    # Mock maintenance prediction data
+    hotspots = [
+        {
+            "area": "HVAC System",
+            "risk_score": 85,
+            "predicted_issue": "Filter replacement needed",
+            "estimated_date": "2024-02-15",
+            "estimated_cost": 250
+        },
+        {
+            "area": "Plumbing",
+            "risk_score": 72,
+            "predicted_issue": "Pipe maintenance",
+            "estimated_date": "2024-03-01",
+            "estimated_cost": 800
+        },
+        {
+            "area": "Electrical",
+            "risk_score": 45,
+            "predicted_issue": "Minor repairs",
+            "estimated_date": "2024-04-10",
+            "estimated_cost": 350
+        }
+    ]
+    
+    return jsonify({
+        "property_id": property_id,
+        "hotspots": hotspots,
+        "total_predicted_cost": sum(h["estimated_cost"] for h in hotspots),
+        "high_risk_count": len([h for h in hotspots if h["risk_score"] >= 70])
+    })
+
 @status_bp.get("/status")
 def status():
     counts = {
